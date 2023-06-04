@@ -10,28 +10,38 @@ import io.termplux.flutter_termplux.FlutterTermPluxPlugin
 
 class MainFragment : FlutterBoostFragment() {
 
-    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
-        super.configureFlutterEngine(flutterEngine)
-        FlutterTermPluxPlugin().configure(flutterEngine = flutterEngine)
+    private val mTermPlux: FlutterTermPluxPlugin = FlutterTermPluxPlugin()
+
+    override fun configureFlutterEngine(
+        flutterEngine: FlutterEngine
+    ) = super.configureFlutterEngine(
+        flutterEngine
+    ).also {
+        mTermPlux.configure(
+            flutterEngine = flutterEngine
+        )
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return FlutterTermPluxPlugin().attach(
-            view = super.onCreateView(
-                inflater,
-                container,
-                savedInstanceState
-            ),
-            flutterFragment = this@MainFragment
-        )
-    }
+    ): View = mTermPlux.attach(
+        view = super.onCreateView(
+            inflater,
+            container,
+            savedInstanceState
+        ),
+        flutterFragment = this@MainFragment
+    )
 
-    override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
-        super.cleanUpFlutterEngine(flutterEngine)
-        FlutterTermPluxPlugin().clean(flutterEngine = flutterEngine)
+    override fun cleanUpFlutterEngine(
+        flutterEngine: FlutterEngine
+    ) = super.cleanUpFlutterEngine(
+        flutterEngine
+    ).also {
+        mTermPlux.clean(
+            flutterEngine = flutterEngine
+        )
     }
 }
