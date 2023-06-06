@@ -1,5 +1,6 @@
 package io.termplux.flutter_termplux
 
+import android.app.Application
 import android.content.Context
 import android.os.Build
 import android.view.View
@@ -9,7 +10,9 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Modifier
@@ -27,6 +30,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import io.termplux.flutter_termplux.ui.theme.TermPluxTheme
 import kotlinx.coroutines.Runnable
 import java.lang.ref.WeakReference
 
@@ -59,6 +63,10 @@ class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux, Defaul
         }
     }
 
+    override fun init(application: Application) {
+
+    }
+
     override fun configure(flutterEngine: FlutterEngine) {
 
     }
@@ -73,7 +81,7 @@ class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux, Defaul
             (mFlutterView.parent as ViewGroup).removeView(mFlutterView)
             // 设置全局上下文
             mContext = context
-            mActivity = requireActivity() as AppCompatActivity
+            mActivity = activity as AppCompatActivity
             // 设置全局活动实例
             mFragment = this@apply
             // 初始化ComposeView
@@ -98,24 +106,31 @@ class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux, Defaul
 
         mComposeView.apply {
             setContent {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        TopAppBar(
-                            title = {
-                                Text(text = "example")
-                            }
-                        )
+                TermPluxTheme {
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        topBar = {
+                            TopAppBar(
+                                title = {
+                                    Text(text = "example")
+                                }
+                            )
+                        }
+                    ) { paddingValues ->
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            AndroidView(
+                                factory = {
+                                    mFlutterView
+                                },
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
                     }
-                ) { paddingValues ->
-                    AndroidView(
-                        factory = {
-                            mFlutterView
-                        },
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues = paddingValues)
-                    )
                 }
             }
         }
