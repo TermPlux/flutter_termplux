@@ -1,12 +1,15 @@
 package io.termplux.flutter_termplux
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,13 +18,33 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.Typography
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.google.accompanist.systemuicontroller.SystemUiController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import io.flutter.embedding.android.FlutterFragment
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
@@ -30,11 +53,11 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.termplux.flutter_termplux.ui.theme.TermPluxTheme
 import kotlinx.coroutines.Runnable
 import java.lang.ref.WeakReference
 
-class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux, DefaultLifecycleObserver, Runnable {
+class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux,
+    DefaultLifecycleObserver, Runnable {
 
     private lateinit var mChannel: MethodChannel
 
@@ -51,7 +74,7 @@ class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux, Defaul
 
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        mChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_termplux")
+        mChannel = MethodChannel(flutterPluginBinding.binaryMessenger, plugin_channel)
         mChannel.setMethodCallHandler(this)
     }
 
@@ -74,7 +97,7 @@ class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux, Defaul
     override fun attach(view: View?, flutterFragment: FlutterFragment): View {
         WeakReference(flutterFragment).get()?.apply {
             // 获取FlutterView
-            findFlutterView(view)?.let { flutter ->
+            findFlutterView(view = view)?.let { flutter ->
                 mFlutterView = flutter
             }
             // 移除FlutterView
@@ -85,10 +108,11 @@ class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux, Defaul
             // 设置全局活动实例
             mFragment = this@apply
             // 初始化ComposeView
-            mComposeView = ComposeView(mContext)
+            mComposeView = ComposeView(context = mContext)
             // 设置声明周期
             lifecycle.addObserver(this@FlutterTermPluxPlugin)
         }
+        // 返回View
         return mComposeView
     }
 
@@ -103,10 +127,12 @@ class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux, Defaul
 
         }
 
-
         mComposeView.apply {
             setContent {
-                TermPluxTheme {
+                TermPluxTheme(
+                    dynamicColor = true && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
+                    activity = mActivity
+                ) {
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
                         topBar = {
@@ -165,9 +191,9 @@ class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux, Defaul
     }
 
     private fun findFlutterView(view: View?): FlutterView? {
-        if (view is FlutterView) return view
-        if (view is ViewGroup) {
-            for (i in 0 until view.childCount) {
+        when {
+            (view is FlutterView) -> return view
+            (view is ViewGroup) -> for (i in 0 until view.childCount) {
                 findFlutterView(view.getChildAt(i))?.let {
                     return it
                 }
@@ -178,5 +204,81 @@ class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux, Defaul
 
     companion object {
 
+        const val plugin_channel: String = "flutter_termplux"
+        const val termplux_channel: String = "termplux_channel"
+
+        private val Purple80: Color = Color(0xFFD0BCFF)
+        private val PurpleGrey80: Color = Color(0xFFCCC2DC)
+        private val Pink80: Color = Color(0xFFEFB8C8)
+
+        private val Purple40: Color = Color(0xFF6650a4)
+        private val PurpleGrey40: Color = Color(0xFF625b71)
+        private val Pink40: Color = Color(0xFF7D5260)
+
+        private val Typography: Typography = Typography(
+            bodyLarge = TextStyle(
+                fontFamily = FontFamily.Default,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                letterSpacing = 0.5.sp
+            )
+        )
+
+        private val DarkColorScheme = darkColorScheme(
+            primary = Purple80,
+            secondary = PurpleGrey80,
+            tertiary = Pink80
+        )
+
+        private val LightColorScheme = lightColorScheme(
+            primary = Purple40,
+            secondary = PurpleGrey40,
+            tertiary = Pink40
+        )
+
+        @Composable
+        private fun TermPluxTheme(
+            dynamicColor: Boolean,
+            activity: AppCompatActivity,
+            content: @Composable () -> Unit
+        ) {
+            val darkTheme: Boolean = isSystemInDarkTheme()
+            val view: View = LocalView.current
+            val window: Window = activity.window
+            val systemUiController: SystemUiController = rememberSystemUiController()
+            val navController: NavHostController = rememberNavController()
+
+            val colorScheme = when {
+                dynamicColor -> {
+                    val context = LocalContext.current
+                    if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(
+                        context
+                    )
+                }
+
+                darkTheme -> DarkColorScheme
+                else -> LightColorScheme
+            }
+
+            if (!view.isInEditMode) {
+                SideEffect {
+                    systemUiController.setSystemBarsColor(
+                        color = Color.Transparent,
+                        darkIcons = !darkTheme
+                    )
+                    WindowCompat.getInsetsController(
+                        window,
+                        view
+                    ).isAppearanceLightStatusBars = !darkTheme
+                }
+            }
+
+            MaterialTheme(
+                colorScheme = colorScheme,
+                typography = Typography,
+                content = content
+            )
+        }
     }
 }

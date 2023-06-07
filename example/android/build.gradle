@@ -14,15 +14,17 @@ buildscript {
 allprojects {
     repositories {
         google()
+        gradlePluginPortal()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
+        mavenLocal()
     }
 }
 
 rootProject.buildDir = '../build'
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
     project.evaluationDependsOn(':app')
 }
 

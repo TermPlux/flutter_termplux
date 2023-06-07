@@ -92,6 +92,32 @@ android {
 
     dependencies {
 
+        // 第三方库
+        // FlutterBoost: https://github.com/alibaba/flutter_boost
+        implementation project(':flutter_boost')
+        // AndroidUtilCode: https://github.com/Blankj/AndroidUtilCode
+        implementation 'com.blankj:utilcodex:1.31.1'
+        // LibTaskbar: https://github.com/farmerbb/libtaskbar
+        implementation 'com.github.farmerbb:libtaskbar:2.2.0'
+        // BaseFramework: https://github.com/kongzue/BaseFramework
+        implementation 'com.github.kongzue:BaseFramework:6.9.0.1'
+        // DialogX: https://github.com/kongzue/DialogX
+        implementation 'com.kongzue.dialogx:DialogX:0.0.48'
+        // DialogX: https://github.com/kongzue/DialogX
+        implementation 'com.kongzue.dialogx.style:DialogXMaterialYouStyle:0.0.48'
+        // LicensesDialog: https://github.com/PSDev/LicensesDialog
+        implementation 'de.psdev.licensesdialog:licensesdialog:2.2.0'
+        // Shizuku-API: https://github.com/RikkaApps/Shizuku-API
+        implementation "dev.rikka.shizuku:api:13.1.1"
+        // Shizuku-API: https://github.com/RikkaApps/Shizuku-API
+        implementation "dev.rikka.shizuku:provider:13.1.1"
+        // AndroidHiddenApiBypass: https://github.com/LSPosed/AndroidHiddenApiBypass
+        implementation 'org.lsposed.hiddenapibypass:hiddenapibypass:4.3'
+        // JetBrains 官方库
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1'
+        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
+        // Google 官方库
         implementation 'androidx.core:core-ktx:1.10.1'
         implementation 'androidx.annotation:annotation:1.6.0'
         implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -105,8 +131,23 @@ android {
         implementation 'androidx.cardview:cardview:1.0.0'
         implementation 'androidx.recyclerview:recyclerview:1.3.0'
 
+        implementation 'androidx.navigation:navigation-compose:2.5.3'
+        implementation 'com.google.android.material:material:1.9.0'
+        implementation 'com.google.android.gms:play-services-base:18.2.0'
+        implementation 'com.google.android.gms:play-services-maps:18.1.0'
+        implementation 'com.google.android.gms:play-services-analytics:18.0.2'
+        implementation 'com.google.accompanist:accompanist-webview:0.30.1'
+        implementation 'com.google.accompanist:accompanist-systemuicontroller:0.30.1'
+        implementation "com.google.accompanist:accompanist-adaptive:0.30.1"
+        implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+        implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+        implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+        implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
 
-        implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+
+
+
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
         implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
         implementation 'androidx.activity:activity-compose:1.7.2'
@@ -115,11 +156,15 @@ android {
         implementation 'androidx.compose.ui:ui-graphics'
         implementation 'androidx.compose.ui:ui-tooling-preview'
         implementation 'androidx.compose.material3:material3'
+
         implementation 'androidx.compose.material3:material3-window-size-class'
+
         androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')
         androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+
         debugImplementation 'androidx.compose.ui:ui-tooling'
         debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.1.1'
     }
