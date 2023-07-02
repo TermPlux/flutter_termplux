@@ -1,7 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
-        android:name=".Application"
         android:icon="@mipmap/ic_launcher"
         android:label="flutter_termplux_example"
         android:theme="@style/Theme.Material3.DayNight.NoActionBar">

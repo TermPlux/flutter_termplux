@@ -1,9 +1,10 @@
 package io.termplux.flutter_termplux
 
-import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
@@ -27,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -45,6 +45,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.idlefish.flutterboost.FlutterBoost
+import com.idlefish.flutterboost.FlutterBoostDelegate
+import com.idlefish.flutterboost.FlutterBoostRouteOptions
+import io.flutter.app.FlutterApplication
 import io.flutter.embedding.android.FlutterFragment
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
@@ -56,7 +60,7 @@ import io.flutter.plugin.common.MethodChannel.Result
 import kotlinx.coroutines.Runnable
 import java.lang.ref.WeakReference
 
-class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux,
+open class FlutterTermPluxPlugin : AppCompatActivity(),FlutterBoostDelegate,FlutterBoost.Callback, FlutterPlugin, MethodCallHandler, TermPlux,
     DefaultLifecycleObserver, Runnable {
 
     private lateinit var mChannel: MethodChannel
@@ -71,6 +75,20 @@ class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux,
     private lateinit var mSplashLogo: AppCompatImageView
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mSettingsView: ViewPager2
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        if (application is FlutterApplication){
+            initFlutterBoost(
+                application = (application as FlutterApplication)
+            )
+        }
+        super<AppCompatActivity>.onCreate(savedInstanceState)
+
+
+
+
+        val intent = Intent(this@FlutterTermPluxPlugin, this.javaClass)
+    }
 
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -122,7 +140,8 @@ class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux,
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
+        super<DefaultLifecycleObserver>.onCreate(owner)
+
         mFlutterView.apply {
 
         }
@@ -163,23 +182,23 @@ class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux,
     }
 
     override fun onStart(owner: LifecycleOwner) {
-        super.onStart(owner)
+        super<DefaultLifecycleObserver>.onStart(owner)
     }
 
     override fun onResume(owner: LifecycleOwner) {
-        super.onResume(owner)
+        super<DefaultLifecycleObserver>.onResume(owner)
     }
 
     override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
+        super<DefaultLifecycleObserver>.onPause(owner)
     }
 
     override fun onStop(owner: LifecycleOwner) {
-        super.onStop(owner)
+        super<DefaultLifecycleObserver>.onStop(owner)
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
-        super.onDestroy(owner)
+        super<DefaultLifecycleObserver>.onDestroy(owner)
     }
 
     override fun clean(flutterEngine: FlutterEngine) {
@@ -188,6 +207,15 @@ class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux,
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         mChannel.setMethodCallHandler(null)
+
+    }
+
+    open fun initFlutterBoost(application: FlutterApplication) {
+
+    }
+
+    open fun initFlutterPlugin(engine: FlutterEngine?){
+
     }
 
     private fun findFlutterView(view: View?): FlutterView? {
@@ -203,6 +231,7 @@ class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux,
     }
 
     companion object {
+
 
         const val plugin_channel: String = "flutter_termplux"
         const val termplux_channel: String = "termplux_channel"
@@ -280,5 +309,19 @@ class FlutterTermPluxPlugin : FlutterPlugin, MethodCallHandler, TermPlux,
                 content = content
             )
         }
+    }
+
+
+
+    override fun pushNativeRoute(options: FlutterBoostRouteOptions?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun pushFlutterRoute(options: FlutterBoostRouteOptions?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onStart(engine: FlutterEngine?) {
+        initFlutterPlugin(engine = engine)
     }
 }
