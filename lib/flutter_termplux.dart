@@ -1,4 +1,3 @@
-
 import 'flutter_termplux_platform_interface.dart';
 
 class FlutterTermPlux {

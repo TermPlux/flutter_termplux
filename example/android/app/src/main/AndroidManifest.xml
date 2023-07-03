@@ -18,8 +18,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name="com.idlefish.flutterboost.containers.FlutterBoostActivity"
+            android:name=".FlutterActivity"
             android:exported="false" />
+
+
     </application>
 </manifest>
