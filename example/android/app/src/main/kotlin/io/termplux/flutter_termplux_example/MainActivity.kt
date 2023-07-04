@@ -23,11 +23,9 @@ class MainActivity : FlutterTermPluxPlugin() {
         }
     }
 
-    override fun initFlutterPlugin(engine: FlutterEngine?) {
-        super.initFlutterPlugin(engine = engine)
-        engine?.let {
-            GeneratedPluginRegistrant.registerWith(it)
-        }
+    override fun initFlutterPlugin(engine: FlutterEngine) {
+        super.initFlutterPlugin(engine)
+        GeneratedPluginRegistrant.registerWith(engine)
     }
 
     override fun onFlutterPush(options: FlutterBoostRouteOptions?) {

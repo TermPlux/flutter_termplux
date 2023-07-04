@@ -3,12 +3,33 @@ package io.termplux.flutter_termplux
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewAnimationUtils
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -21,6 +42,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import androidx.window.layout.DisplayFeature
+import com.google.accompanist.adaptive.calculateDisplayFeatures
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.internal.EdgeToEdgeUtils
 import com.google.android.material.navigation.NavigationView
@@ -36,7 +59,10 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.termplux.flutter_termplux.databinding.ContainerBinding
 import io.termplux.flutter_termplux.implement.FlutterViewReturn
+import io.termplux.flutter_termplux.ui.layout.ActivityMain
+import io.termplux.flutter_termplux.ui.theme.FlutterTermPluxTheme
 import kotlinx.coroutines.Runnable
+import kotlin.math.hypot
 
 open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, FlutterBoost.Callback,
     FlutterPlugin, MethodChannel.MethodCallHandler, FlutterViewReturn, FlutterEngineConfigurator,
@@ -44,16 +70,15 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
 
     private lateinit var mChannel: MethodChannel
 
-    private lateinit var mFlutterView: FlutterView
+    private lateinit var mFlutterFrameLayout: FrameLayout
     private lateinit var mSplashLogo: AppCompatImageView
+    private lateinit var mRootLayout: FrameLayout
 
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mSettingsView: ViewPager2
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
-
-    private lateinit var mToolbar: MaterialToolbar
 
     private lateinit var mFragmentContainerView: FragmentContainerView
 
@@ -75,45 +100,74 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         // 设置页面布局边界
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-
+        // 布局绑定
         val binding = ContainerBinding.inflate(layoutInflater)
+        // 获取Fragment容器视图
         mFragmentContainerView = binding.navHostFragmentContentMain
-        setContentView(mFragmentContainerView)
-        mToolbar = MaterialToolbar(this)
-        setSupportActionBar(mToolbar)
-
-
-        val navView = NavigationView(this).apply {
-            inflateHeaderView(R.layout.nav_header_main)
-            inflateMenu(R.menu.activity_main_drawer)
-        }
-
+        // 导航主机
         val navHostFragment = supportFragmentManager.findFragmentById(
-            binding.navHostFragmentContentMain.id
+            mFragmentContainerView.id
         ) as NavHostFragment
-
+        // 获取导航控制器
         navController = navHostFragment.navController
-        navController.setGraph(R.navigation.mobile_navigation)
-
+        // 设置导航图
+        navController.setGraph(
+            graphResId = R.navigation.mobile_navigation,
+            startDestinationArgs = Bundle()
+        )
+        // 初始化操作栏配置器
         appBarConfiguration = AppBarConfiguration(
             navGraph = navController.graph
         )
 
 
-        setupActionBarWithNavController(
-            navController = navController,
-            configuration = appBarConfiguration
-        )
+        mFlutterFrameLayout = FrameLayout(this).apply {
+            visibility = View.INVISIBLE
+            post(this@FlutterTermPluxPlugin)
+        }
 
-        navView.setupWithNavController(
-            navController = navController
-        )
+        // 初始化屏闪动画
+        mSplashLogo = AppCompatImageView(this@FlutterTermPluxPlugin).apply {
+            setImageDrawable(
+                ContextCompat.getDrawable(
+                    context,
+                    R.drawable.custom_termplux_24
+                )
+            )
+        }
+        // 初始化跟布局
+        mRootLayout = FrameLayout(this@FlutterTermPluxPlugin).apply {
+            addView(
+                mFlutterFrameLayout,
+                FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT
+                )
+            )
+            addView(
+                mSplashLogo,
+                FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    Gravity.CENTER
+                )
+            )
+        }
+
+        // 添加生命周期观察者
+        lifecycle.addObserver(this@FlutterTermPluxPlugin)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_settings -> navController.navigate(R.id.nav_settings)
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -122,7 +176,8 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
 
     override fun pushNativeRoute(options: FlutterBoostRouteOptions?) {
         when (options?.pageName()) {
-
+            "flutter" -> navController.navigate(R.id.nav_flutter)
+            "settings" -> navController.navigate(R.id.nav_settings)
         }
     }
 
@@ -131,7 +186,9 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
     }
 
     override fun onStart(engine: FlutterEngine?) {
-        initFlutterPlugin(engine = engine)
+        engine?.let {
+            initFlutterPlugin(engine = it)
+        }
     }
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -144,20 +201,34 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        when (call.method){
+        when (call.method) {
             "getPlatformVersion" -> result.success("Android ${Build.VERSION.RELEASE}")
             else -> result.notImplemented()
         }
     }
 
     override fun onFlutterCreated(flutterView: FlutterView?) {
-        // 获取Flutter视图
-        mFlutterView = (flutterView ?: errorFlutterViewNull()).apply {}
-        // 移除原Flutter视图
-        (flutterView.parent as ViewGroup).removeView(flutterView)
-        // 添加生命周期观察者
-        setContentView(mFlutterView)
-    //    lifecycle.addObserver(this@FlutterTermPluxPlugin)
+        // 如果FlutterView非空则继续执行否则抛出异常
+        (flutterView ?: errorFlutterViewNull()).let { create ->
+            // 将FlutterView从Fragment上移除
+            (create.parent as ViewGroup).removeView(create)
+            // 判断Flutter是否已经添加到FrameLayout上
+            if (create.parent != mFlutterFrameLayout){
+                // 将FlutterView添加到FrameLayout上
+                mFlutterFrameLayout.addView(create)
+            }
+        }
+    }
+
+    override fun onFlutterDestroy(flutterView: FlutterView?) {
+        // 如果FlutterView非空则继续执行否则抛出异常
+        (flutterView ?: errorFlutterViewNull()).let { destroy ->
+            // 判断Flutter是否已经添加到FrameLayout上
+            if (destroy.parent == mFlutterFrameLayout){
+                // 将FlutterView从FrameLayout上移除
+                mFlutterFrameLayout.removeView(destroy)
+            }
+        }
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -168,39 +239,47 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
 
     }
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(owner: LifecycleOwner) {
         super<DefaultLifecycleObserver>.onCreate(owner)
 
-//        setContent {
-//            FlutterTermPluxTheme(
-//                dynamicColor = true
-//            ) {
-//                Scaffold(
-//                    modifier = Modifier.fillMaxSize(),
-//                    topBar = {
-//                        TopAppBar(
-//                            title = {
-//                                Text(text = "example")
-//                            }
-//                        )
-//                    }
-//                ) { paddingValues ->
-//                    Surface(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(paddingValues),
-//                        color = MaterialTheme.colorScheme.background
-//                    ) {
-//                        AndroidView(
-//                            factory = {
-//                                mFlutterView
-//                            },
-//                            modifier = Modifier.fillMaxSize()
-//                        )
-//                    }
-//                }
-//            }
-//        }
+        setContent {
+            val windowSize: WindowSizeClass = calculateWindowSizeClass(activity = this)
+            val displayFeatures: List<DisplayFeature> = calculateDisplayFeatures(activity = this)
+            // val preferenceAdapter = PreferenceAdapter(activity = this)
+            FlutterTermPluxTheme(
+                dynamicColor = true
+            ) {
+                ActivityMain(
+                    windowSize = windowSize,
+                    displayFeatures = displayFeatures,
+                    rootLayout = mRootLayout,
+                    appsUpdate = {
+
+                    },
+                    topBarVisible = true,
+                    topBarUpdate = { toolbar ->
+                        setSupportActionBar(toolbar)
+                        supportActionBar?.setIcon(R.drawable.baseline_terminal_24)
+                        supportActionBar?.setSubtitle(R.string.lib_name)
+                        setupActionBarWithNavController(
+                            navController = navController,
+                            configuration = appBarConfiguration
+                        )
+                    },
+                    fragment = mFragmentContainerView,
+                    preferenceUpdate = {
+
+                    },
+                    optionsMenu = {},
+                    androidVersion = "13",
+                    shizukuVersion = "13",
+                    current = {},
+                    toggle = { /*TODO*/ },
+                    taskbar = {}
+                )
+            }
+        }
     }
 
     override fun onStart(owner: LifecycleOwner) {
@@ -225,7 +304,42 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
 
 
     override fun run() {
-
+        val cx = mSplashLogo.x + mSplashLogo.width / 2f
+        val cy = mSplashLogo.y + mSplashLogo.height / 2f
+        val startRadius = hypot(
+            x = mSplashLogo.width.toFloat(),
+            y = mSplashLogo.height.toFloat()
+        )
+        val endRadius = hypot(
+            x = mFlutterFrameLayout.width.toFloat(),
+            y = mFlutterFrameLayout.height.toFloat()
+        )
+        val circularAnim = ViewAnimationUtils
+            .createCircularReveal(
+                mFlutterFrameLayout,
+                cx.toInt(),
+                cy.toInt(),
+                startRadius,
+                endRadius
+            )
+            .setDuration(
+                splashPart2AnimatorMillis.toLong()
+            )
+        mSplashLogo.animate()
+            .alpha(0f)
+            .scaleX(1.3f)
+            .scaleY(1.3f)
+            .setDuration(
+                splashPart1AnimatorMillis.toLong()
+            )
+            .withEndAction {
+                mSplashLogo.visibility = View.GONE
+            }
+            .withStartAction {
+                mFlutterFrameLayout.visibility = View.VISIBLE
+                circularAnim.start()
+            }
+            .start()
     }
 
     private fun errorFlutterViewNull(): Nothing {
@@ -241,7 +355,7 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
     /**
      * 初始化Flutter插件
      */
-    open fun initFlutterPlugin(engine: FlutterEngine?) = Unit
+    open fun initFlutterPlugin(engine: FlutterEngine) = Unit
 
     /**
      * 打开新的Flutter页面
@@ -251,5 +365,9 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
 
     companion object {
         const val plugin_channel: String = "flutter_termplux"
+
+        /** 开屏图标动画时长 */
+        const val splashPart1AnimatorMillis = 600
+        const val splashPart2AnimatorMillis = 800
     }
 }

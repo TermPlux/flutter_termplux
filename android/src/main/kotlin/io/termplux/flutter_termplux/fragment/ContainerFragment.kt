@@ -30,11 +30,10 @@ class ContainerFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        super.onCreateView(inflater, container, savedInstanceState)
-        return FragmentContainerView(requireContext()).apply {
-            id = R.id.flutter_container
-        }
+    ): View = FragmentContainerView(
+        context = requireContext()
+    ).apply {
+        id = R.id.flutter_container
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

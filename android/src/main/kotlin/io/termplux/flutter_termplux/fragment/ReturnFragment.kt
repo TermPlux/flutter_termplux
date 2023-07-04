@@ -4,31 +4,58 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Space
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.navigation.NavigationView
 import com.idlefish.flutterboost.containers.FlutterBoostFragment
 import io.flutter.embedding.android.FlutterView
+import io.termplux.flutter_termplux.R
 import io.termplux.flutter_termplux.implement.FlutterViewReturn
 
 class ReturnFragment : FlutterBoostFragment() {
+
+    private var flutterView: FlutterView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = Space(context).apply {
+    ): View  = NavigationView(requireActivity()).apply {
         super.onCreateView(inflater, container, savedInstanceState)?.let { parent ->
-            when (val activity = requireActivity()) {
-                is FlutterViewReturn -> {
-                    (activity as FlutterViewReturn).apply {
-                        onFlutterCreated(
-                            flutterView = findFlutterView(
-                                view = parent
+            flutterView = findFlutterView(
+                view = parent
+            )
+            apply {
+                inflateHeaderView(R.layout.nav_header_main)
+                inflateMenu(R.menu.activity_main_drawer)
+                setupWithNavController(
+                    navController = findNavController()
+                )
+            }.run {
+                when (val activity = requireActivity()) {
+                    is FlutterViewReturn -> {
+                        (activity as FlutterViewReturn).apply {
+                            onFlutterCreated(
+                                flutterView = flutterView
                             )
-                        )
+                        }
                     }
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        when (val activity = requireActivity()) {
+            is FlutterViewReturn -> {
+                (activity as FlutterViewReturn).apply {
+                    onFlutterDestroy(flutterView = flutterView)
+                }
+            }
+        }
+
+        flutterView = null
     }
 
     private fun findFlutterView(view: View): FlutterView? {
