@@ -3,8 +3,13 @@ package io.termplux.flutter_termplux.ui.layout
 import android.view.Gravity
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -19,34 +24,52 @@ import io.termplux.flutter_termplux.ui.theme.FlutterTermPluxTheme
 import io.termplux.flutter_termplux.ui.widget.RootContent
 
 @Composable
-fun ScreenHome(
+fun ScreenFlutter(
     rootLayout: FrameLayout
 ) {
+    val scrollState = rememberScrollState()
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        ElevatedCard(
-            modifier = Modifier.padding(
-                start = 16.dp,
-                end = 16.dp,
-                top = 5.dp,
-                bottom = 5.dp
-            )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(
+                    state = scrollState
+                )
         ) {
-            RootContent(
-                rootLayout = rootLayout
-            )
+            ElevatedCard(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(
+                        weight = 1f,
+                        fill = true
+                    )
+                    .padding(
+                        vertical = 8.dp,
+                        horizontal = 16.dp
+                    )
+            ) {
+                RootContent(
+                    rootLayout = rootLayout,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .height(
+                            intrinsicSize = IntrinsicSize.Max
+                        )
+                )
+            }
         }
     }
 }
 
 @Composable
 @ScreenPreviews
-fun ScreenHomePreview() {
+fun ScreenFlutterPreview() {
     val context = LocalContext.current
     FlutterTermPluxTheme {
-        ScreenHome(
+        ScreenFlutter(
             rootLayout = FrameLayout(context).apply {
                 addView(
                     TextView(context).apply {

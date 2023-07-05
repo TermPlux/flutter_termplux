@@ -61,10 +61,8 @@ fun ScreenSettings(
         ) {
             ElevatedCard(
                 modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 5.dp,
-                    bottom = 8.dp
+                    vertical = 8.dp,
+                    horizontal = 16.dp
                 )
             ) {
                 Text(
@@ -118,10 +116,8 @@ fun ScreenSettings(
             }
             ElevatedCard(
                 modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 8.dp,
-                    bottom = 8.dp
+                    vertical = 8.dp,
+                    horizontal = 16.dp
                 )
             ) {
                 Text(
@@ -148,10 +144,8 @@ fun ScreenSettings(
             }
             ElevatedCard(
                 modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 8.dp,
-                    bottom = 16.dp
+                    vertical = 8.dp,
+                    horizontal = 16.dp
                 )
             ) {
                 Text(

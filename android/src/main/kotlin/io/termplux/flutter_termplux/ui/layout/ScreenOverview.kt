@@ -54,7 +54,8 @@ fun ScreenOverview(
         ) {
             ElevatedCard(
                 modifier = Modifier.padding(
-                    start = 16.dp, end = 16.dp, top = 5.dp, bottom = 8.dp
+                    vertical = 8.dp,
+                    horizontal = 16.dp
                 ),
                 colors = CardDefaults.elevatedCardColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer
@@ -122,7 +123,8 @@ fun ScreenOverview(
             }
             ElevatedCard(
                 modifier = Modifier.padding(
-                    start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp
+                    vertical = 8.dp,
+                    horizontal = 16.dp
                 )
             ) {
                 Box(
@@ -262,10 +264,8 @@ fun ScreenOverview(
             }
             ElevatedCard(
                 modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 8.dp,
-                    bottom = 8.dp
+                    vertical = 8.dp,
+                    horizontal = 16.dp
                 )
             ) {
                 Row(
@@ -298,10 +298,8 @@ fun ScreenOverview(
             }
             ElevatedCard(
                 modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 8.dp,
-                    bottom = 16.dp
+                    vertical = 8.dp,
+                    horizontal = 16.dp
                 )
             ) {
                 Row(

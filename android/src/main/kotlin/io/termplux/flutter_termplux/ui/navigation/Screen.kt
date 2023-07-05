@@ -8,6 +8,7 @@ import androidx.compose.material.icons.twotone.Apps
 import androidx.compose.material.icons.twotone.FlutterDash
 import androidx.compose.material.icons.twotone.Info
 import androidx.compose.material.icons.twotone.ListAlt
+import androidx.compose.material.icons.twotone.OtherHouses
 import androidx.compose.material.icons.twotone.RoomPreferences
 import androidx.compose.material.icons.twotone.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -21,11 +22,19 @@ sealed class Screen constructor(
     @StringRes val title: Int,
 ) {
 
+    object Overview: Screen(
+        type = ScreenType.Compose,
+        item = ItemType.Default,
+        route = ScreenRoute.routeDashboard,
+        imageVector = Icons.TwoTone.ListAlt,
+        title = R.string.menu_overview
+    )
+
     object Apps: Screen(
         type = ScreenType.Compose,
         item = ItemType.Default,
         route = "apps",
-        imageVector = Icons.TwoTone.Apps,
+        imageVector = Icons.TwoTone.OtherHouses,
         title = R.string.menu_apps
     )
 
@@ -35,14 +44,6 @@ sealed class Screen constructor(
         route = ScreenRoute.routeHome,
         imageVector = Icons.TwoTone.FlutterDash,
         title = R.string.menu_flutter
-    )
-
-    object Overview: Screen(
-        type = ScreenType.Compose,
-        item = ItemType.Default,
-        route = ScreenRoute.routeDashboard,
-        imageVector = Icons.TwoTone.ListAlt,
-        title = R.string.menu_overview
     )
 
     object Manager : Screen(

@@ -41,4 +41,5 @@ class MainActivity : FlutterTermPluxPlugin() {
             .build(FlutterBoost.instance().currentActivity())
         FlutterBoost.instance().currentActivity().startActivity(intent)
     }
+
 }

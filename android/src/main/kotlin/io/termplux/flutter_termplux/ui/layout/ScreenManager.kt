@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,6 +28,7 @@ import com.blankj.utilcode.util.AppUtils
 import com.google.android.material.appbar.MaterialToolbar
 import io.termplux.flutter_termplux.R
 import io.termplux.flutter_termplux.ui.preview.ScreenPreviews
+import io.termplux.flutter_termplux.ui.widget.RootContent
 import io.termplux.flutter_termplux.ui.widget.TopActionBar
 
 @Composable
@@ -34,9 +36,7 @@ fun ScreenManager(
     navController: NavHostController,
     toggle: () -> Unit,
     current: (item: Int) -> Unit,
-    topBarVisible: Boolean,
-    topBarUpdate: (MaterialToolbar) -> Unit,
-    fragment: FragmentContainerView,
+
     targetAppName: String,
     targetAppPackageName: String,
     targetAppDescription: String,
@@ -69,24 +69,8 @@ fun ScreenManager(
         ) {
             ElevatedCard(
                 modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 5.dp,
-                    bottom = 8.dp
-                )
-            ) {
-                TopActionBar(
-                    modifier = Modifier.fillMaxWidth(),
-                    visible = topBarVisible,
-                    update = topBarUpdate
-                )
-            }
-            ElevatedCard(
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 8.dp,
-                    bottom = 8.dp
+                    vertical = 8.dp,
+                    horizontal = 16.dp
                 )
             ) {
                 Column(
@@ -191,10 +175,8 @@ fun ScreenManager(
             }
             ElevatedCard(
                 modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 8.dp,
-                    bottom = 8.dp
+                    vertical = 8.dp,
+                    horizontal = 16.dp
                 )
             ) {
                 Row(
@@ -260,10 +242,8 @@ fun ScreenManager(
             }
             ElevatedCard(
                 modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 8.dp,
-                    bottom = 8.dp
+                    vertical = 8.dp,
+                    horizontal = 16.dp
                 )
             ) {
                 Column(
@@ -318,21 +298,6 @@ fun ScreenManager(
                     )
                 }
             }
-            ElevatedCard(
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 8.dp,
-                    bottom = 5.dp
-                )
-            ) {
-                AndroidView(
-                    factory = {
-                        return@AndroidView fragment
-                    },
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
         }
     }
 }
@@ -344,9 +309,6 @@ private fun ScreenManagerPreview() {
         navController = rememberNavController(),
         toggle = {},
         current = {},
-        topBarVisible = true,
-        topBarUpdate = {},
-        fragment = FragmentContainerView(context = LocalContext.current),
         targetAppName = stringResource(
             id = R.string.lib_name
         ),

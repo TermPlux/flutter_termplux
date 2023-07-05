@@ -1,5 +1,6 @@
 package io.termplux.flutter_termplux.ui.layout
 
+import android.view.View
 import android.widget.FrameLayout
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
@@ -16,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -62,7 +64,6 @@ fun ActivityMain(
     toggle: () -> Unit,
     taskbar: () -> Unit
 ) {
-
     val pages = listOf(
         Screen.Flutter,
         Screen.Divider,
@@ -85,7 +86,7 @@ fun ActivityMain(
 
     val scope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val currentDestination = navBackStackEntry?.destination
     val snackBarHostState = remember {
         SnackbarHostState()
@@ -290,7 +291,7 @@ fun ActivityMain(
                 AnimatedVisibility(
                     visible = true
                 ) {
-                    MediumTopAppBar(
+                    LargeTopAppBar(
                         title = {
                             Text(
                                 text = stringResource(
@@ -343,7 +344,7 @@ fun ActivityMain(
                                 )
                             }
                         },
-                        colors = TopAppBarDefaults.mediumTopAppBarColors(),
+                        colors = TopAppBarDefaults.largeTopAppBarColors(),
                         scrollBehavior = scrollBehavior
                     )
                 }
@@ -471,14 +472,11 @@ fun ActivityMain(
                 NavHost(
                     navController = navController,
                     startDestination = Screen.Flutter.route,
-                    modifier = when (navigationType) {
-                        NavigationType.PermanentNavigationDrawer -> Modifier.fillMaxSize()
-                        else -> Modifier
-                            .fillMaxSize()
-                            .nestedScroll(
-                                connection = scrollBehavior.nestedScrollConnection
-                            )
-                    }
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .nestedScroll(
+                            connection = scrollBehavior.nestedScrollConnection
+                        )
                 ) {
                     composable(
                         route = Screen.Overview.route
@@ -491,23 +489,29 @@ fun ActivityMain(
                     composable(
                         route = Screen.Apps.route
                     ) {
-                        ScreenApps(appsUpdate = appsUpdate)
+                        ScreenApps(
+                            topBarVisible = topBarVisible,
+                            topBarUpdate = topBarUpdate,
+                            hostContainer = fragment
+                        )
                     }
                     composable(
                         route = Screen.Flutter.route
                     ) {
-                        ScreenHome(rootLayout = rootLayout)
+                        ScreenFlutter(
+                            rootLayout = rootLayout
+                        )
                     }
                     composable(
                         route = Screen.Manager.route
                     ) {
                         ScreenManager(
                             navController = navController,
-                            topBarUpdate = topBarUpdate,
+
                             toggle = toggle,
                             current = current,
-                            topBarVisible = topBarVisible,
-                            fragment = fragment,
+
+
                             targetAppName = stringResource(id = R.string.lib_name),
                             targetAppPackageName = AppUtils.getAppPackageName(),
                             targetAppDescription = stringResource(id = R.string.lib_description),

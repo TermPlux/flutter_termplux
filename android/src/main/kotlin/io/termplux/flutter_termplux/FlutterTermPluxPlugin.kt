@@ -28,6 +28,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -220,7 +221,7 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
     override fun onFlutterCreated(flutterView: FlutterView?) {
         (flutterView ?: errorFlutterViewNull()).let { create ->
             (create.parent as ViewGroup).removeView(create)
-            if (create.parent != mFlutterFrameLayout){
+            if (create.parent != mFlutterFrameLayout) {
                 mFlutterFrameLayout.addView(
                     create,
                     FrameLayout.LayoutParams(
@@ -228,7 +229,7 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
                         FrameLayout.LayoutParams.MATCH_PARENT
                     )
                 )
-                if (mFlutterTextView.parent == mFlutterFrameLayout){
+                if (mFlutterTextView.parent == mFlutterFrameLayout) {
                     mFlutterFrameLayout.removeView(mFlutterTextView)
                 }
             }
@@ -237,9 +238,9 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
 
     override fun onFlutterDestroy(flutterView: FlutterView?) {
         (flutterView ?: errorFlutterViewNull()).let { destroy ->
-            if (destroy.parent == mFlutterFrameLayout){
+            if (destroy.parent == mFlutterFrameLayout) {
                 mFlutterFrameLayout.removeView(destroy)
-                if (mFlutterTextView.parent != mFlutterFrameLayout){
+                if (mFlutterTextView.parent != mFlutterFrameLayout) {
                     mFlutterFrameLayout.addView(
                         mFlutterTextView,
                         FrameLayout.LayoutParams(
@@ -265,8 +266,8 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(owner: LifecycleOwner) {
         super<DefaultLifecycleObserver>.onCreate(owner)
-
         setContent {
+            //Content()
             val windowSize: WindowSizeClass = calculateWindowSizeClass(activity = this)
             val displayFeatures: List<DisplayFeature> = calculateDisplayFeatures(activity = this)
             FlutterTermPluxTheme(
@@ -282,7 +283,6 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
                     topBarVisible = true,
                     topBarUpdate = { toolbar ->
                         setSupportActionBar(toolbar)
-                        supportActionBar?.setSubtitle(R.string.lib_name)
                         setupActionBarWithNavController(
                             navController = navController,
                             configuration = appBarConfiguration
@@ -368,9 +368,12 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
     }
 
 
-    open fun initFlutterBoost(application: FlutterApplication){}
-    open fun initFlutterPlugin(engine: FlutterEngine){}
-    open fun onFlutterPush(options: FlutterBoostRouteOptions){}
+    open fun initFlutterBoost(application: FlutterApplication) = Unit
+    open fun initFlutterPlugin(engine: FlutterEngine) = Unit
+    open fun onFlutterPush(options: FlutterBoostRouteOptions) = Unit
+
+    @Composable
+    open fun Content() = Unit
 
 
     companion object {
