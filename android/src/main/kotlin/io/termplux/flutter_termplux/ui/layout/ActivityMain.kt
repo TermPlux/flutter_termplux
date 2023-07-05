@@ -8,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Terminal
+import androidx.compose.material.icons.twotone.FlutterDash
 import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -84,7 +85,7 @@ fun ActivityMain(
 
     val scope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val currentDestination = navBackStackEntry?.destination
     val snackBarHostState = remember {
         SnackbarHostState()
@@ -289,7 +290,7 @@ fun ActivityMain(
                 AnimatedVisibility(
                     visible = true
                 ) {
-                    CenterAlignedTopAppBar(
+                    MediumTopAppBar(
                         title = {
                             Text(
                                 text = stringResource(
@@ -342,7 +343,7 @@ fun ActivityMain(
                                 )
                             }
                         },
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
+                        colors = TopAppBarDefaults.mediumTopAppBarColors(),
                         scrollBehavior = scrollBehavior
                     )
                 }

@@ -34,7 +34,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun FlutterTermPluxTheme(
-    dynamicColor: Boolean,
+    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val darkTheme: Boolean = isSystemInDarkTheme()

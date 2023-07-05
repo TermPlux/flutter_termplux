@@ -45,7 +45,7 @@ class ContainerFragment : Fragment() {
                 .destroyEngineWithFragment(false)
                 .renderMode(RenderMode.surface)
                 .transparencyMode(TransparencyMode.opaque)
-                .shouldAttachEngineToActivity(false)
+                .shouldAttachEngineToActivity(true)
                 .build<ReturnFragment>()
             mFragmentManager.commit(
                 allowStateLoss = false,

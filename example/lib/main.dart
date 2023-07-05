@@ -44,7 +44,9 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: home,
       builder: (context, child) => home,
-      theme: ThemeData(useMaterial3: true),
+      theme: ThemeData(
+          useMaterial3: true,
+      ),
     );
   }
 
@@ -99,11 +101,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('flutter_termplux_example'),
+        title: const Text('插件示例应用'),
       ),
       body: Center(
         child: Text('Running on: $_platformVersion\n')
-      ),
+      )
     );
   }
 }

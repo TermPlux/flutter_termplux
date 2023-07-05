@@ -187,56 +187,8 @@ fun ScreenManager(
                             style = MaterialTheme.typography.titleSmall
                         )
                     }
-//                    IconButton(
-//                        onClick = {
-//                            toggle()
-//                        }
-//                    ) {
-//                        Icon(
-//                            imageVector = Icons.Filled.Search,
-//                            contentDescription = null
-//                        )
-//                    }
                 }
-//                AssistChip(
-//                    onClick = {
-//
-//                    },
-//                    label = {
-//                        Text(
-//                            text = "切换到内容页",
-//                            color = MaterialTheme.colorScheme.primary
-//                        )
-//                    },
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(horizontal = 5.dp),
-//                    enabled = true,
-//                    leadingIcon = {
-//                        Icon(
-//                            imageVector = Icons.Outlined.Terminal,
-//                            contentDescription = null,
-//                            modifier = Modifier.size(
-//                                AssistChipDefaults.IconSize
-//                            ),
-//                            tint = MaterialTheme.colorScheme.primary
-//                        )
-//                    }
-//                )
             }
-
-//            ElevatedCard(
-//                modifier = Modifier.padding(
-//                    start = 16.dp,
-//                    end = 16.dp,
-//                    top = 8.dp,
-//                    bottom = 8.dp
-//                )
-//            ) {
-//
-//
-//            }
-
             ElevatedCard(
                 modifier = Modifier.padding(
                     start = 16.dp,
@@ -306,9 +258,6 @@ fun ScreenManager(
                     )
                 }
             }
-
-
-
             ElevatedCard(
                 modifier = Modifier.padding(
                     start = 16.dp,
@@ -369,230 +318,23 @@ fun ScreenManager(
                     )
                 }
             }
-
-
-            AndroidView(
-                factory = {
-                    return@AndroidView fragment
-                },
-                modifier = Modifier.fillMaxSize()
-            )
-
-
-//            Divider()
-//
-//
-//
-//            Column(
-//                modifier = Modifier.fillMaxWidth()
-//            ) {
-//                Text(
-//                    text = "设备信息",
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(
-//                            start = 5.dp,
-//                            end = 5.dp,
-//                            top = 5.dp,
-//                            bottom = 2.5.dp
-//                        )
-//                )
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(IntrinsicSize.Min)
-//                        .padding(
-//                            start = 5.dp,
-//                            end = 5.dp,
-//                            top = 2.5.dp,
-//                            bottom = 2.5.dp
-//                        ),
-//                    verticalAlignment = Alignment.CenterVertically
-//                ) {
-//                    Icon(
-//                        imageVector = Icons.Filled.Android,
-//                        contentDescription = null,
-//                        tint = MaterialTheme.colorScheme.primary
-//                    )
-//                    Text(
-//                        text = "sb",
-//                        modifier = Modifier
-//                            .weight(1f)
-//                            .padding(
-//                                start = 5.dp,
-//                            )
-//                    )
-//                }
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(IntrinsicSize.Min)
-//                        .padding(
-//                            start = 5.dp,
-//                            end = 5.dp,
-//                            top = 2.5.dp,
-//                            bottom = 2.5.dp
-//                        ),
-//                    verticalAlignment = Alignment.CenterVertically
-//                ) {
-//                    Icon(
-//                        imageVector = Icons.Filled.PhoneAndroid,
-//                        contentDescription = null,
-//                        tint = MaterialTheme.colorScheme.primary
-//                    )
-//                    Text(
-//                        text = "sb",
-//                        modifier = Modifier
-//                            .weight(1f)
-//                            .padding(
-//                                start = 5.dp,
-//                            )
-//                    )
-//                }
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(IntrinsicSize.Min)
-//                        .padding(
-//                            start = 5.dp,
-//                            end = 5.dp,
-//                            top = 2.5.dp,
-//                            bottom = 2.5.dp
-//                        ),
-//                    verticalAlignment = Alignment.CenterVertically
-//                ) {
-//                    Icon(
-//                        imageVector = Icons.Filled.DesignServices,
-//                        contentDescription = null,
-//                        tint = MaterialTheme.colorScheme.primary
-//                    )
-//                    Text(
-//                        text = "sb",
-//                        modifier = Modifier
-//                            .weight(1f)
-//                            .padding(
-//                                start = 5.dp,
-//                            )
-//                    )
-//                }
-            //}
+            ElevatedCard(
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 8.dp,
+                    bottom = 5.dp
+                )
+            ) {
+                AndroidView(
+                    factory = {
+                        return@AndroidView fragment
+                    },
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
     }
-//    Scaffold(
-//        modifier = Modifier.fillMaxSize(),
-//        topBar = {
-//            TopAppBar(
-//                title = {
-//                    Text(
-//                        text = stringResource(
-//                            id = R.string.menu_dashboard
-//                        )
-//                    )
-//                },
-//                modifier = Modifier.fillMaxWidth(),
-//                navigationIcon = {
-//                    IconButton(
-//                        onClick = {
-//                            scope.launch {
-//                                drawerState.open()
-//                            }
-//                        }
-//                    ) {
-//                        Icon(
-//                            imageVector = Icons.Filled.Menu,
-//                            contentDescription = null
-//                        )
-//                    }
-//                },
-//                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
-//                scrollBehavior = scrollBehavior
-//            )
-//        },
-//        bottomBar = {
-//            BottomAppBar(
-//                actions = {
-//                    IconButton(
-//                        onClick = {
-//                            navController.navigateUp()
-//                        }
-//                    ) {
-//                        Icon(
-//                            imageVector = Icons.Filled.ArrowBack,
-//                            contentDescription = null
-//                        )
-//                    }
-//                    IconButton(
-//                        onClick = {
-//                            navController.navigate(
-//                                route = Screen.Content.route
-//                            ) {
-//                                popUpTo(
-//                                    id = navController.graph.findStartDestination().id
-//                                ) {
-//                                    saveState = true
-//                                }
-//                                launchSingleTop = true
-//                                restoreState = true
-//                            }.also {
-//                                current(
-//                                    ScreenRoute.routeLauncherFragment.toInt()
-//                                ).also {
-//                                    toggle()
-//                                }
-//                            }
-//                        }
-//                    ) {
-//                        Icon(
-//                            imageVector = Icons.Filled.TouchApp,
-//                            contentDescription = null
-//                        )
-//                    }
-//                    IconButton(
-//                        onClick = {
-//
-//                        }
-//                    ) {
-//
-//                    }
-//                },
-//                floatingActionButton = {
-//                    FloatingActionButton(
-//                        onClick = {
-//                            navController.navigate(
-//                                route = Screen.Content.route
-//                            ) {
-//                                popUpTo(
-//                                    id = navController.graph.findStartDestination().id
-//                                ) {
-//                                    saveState = true
-//                                }
-//                                launchSingleTop = true
-//                                restoreState = true
-//                            }.also {
-//                                current(
-//                                    ScreenRoute.routeLauncherFragment.toInt()
-//                                )
-//                            }
-//                        }
-//                    ) {
-//                        Icon(
-//                            imageVector = Icons.Outlined.Terminal,
-//                            contentDescription = null
-//                        )
-//                    }
-//                }
-//            )
-//        },
-//        snackbarHost = {
-//            SnackbarHost(
-//                hostState = snackBarHostState
-//            )
-//        },
-//        contentWindowInsets = ScaffoldDefaults.contentWindowInsets
-//    ) { innerPadding ->
-//
-//    }
-
 }
 
 @Composable

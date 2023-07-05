@@ -24,20 +24,20 @@ class MainActivity : FlutterTermPluxPlugin() {
     }
 
     override fun initFlutterPlugin(engine: FlutterEngine) {
-        super.initFlutterPlugin(engine)
+        super.initFlutterPlugin(engine = engine)
         GeneratedPluginRegistrant.registerWith(engine)
     }
 
-    override fun onFlutterPush(options: FlutterBoostRouteOptions?) {
+    override fun onFlutterPush(options: FlutterBoostRouteOptions) {
         super.onFlutterPush(options = options)
         val intent = FlutterBoostActivity.CachedEngineIntentBuilder(
             FlutterActivity::class.java
         )
             .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.transparent)
             .destroyEngineWithActivity(false)
-            .uniqueId(options?.uniqueId())
-            .url(options?.pageName())
-            .urlParams(options?.arguments())
+            .uniqueId(options.uniqueId())
+            .url(options.pageName())
+            .urlParams(options.arguments())
             .build(FlutterBoost.instance().currentActivity())
         FlutterBoost.instance().currentActivity().startActivity(intent)
     }

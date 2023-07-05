@@ -15,6 +15,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetScaffold
@@ -71,6 +72,7 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
     private lateinit var mChannel: MethodChannel
 
     private lateinit var mFlutterFrameLayout: FrameLayout
+    private lateinit var mFlutterTextView: AppCompatTextView
     private lateinit var mSplashLogo: AppCompatImageView
     private lateinit var mRootLayout: FrameLayout
 
@@ -82,6 +84,7 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
 
     private lateinit var mFragmentContainerView: FragmentContainerView
 
+
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         // 初始化FlutterBoost
@@ -92,7 +95,6 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
         }
         // 设置主题
         setTheme(R.style.Theme_FlutterTermPlux)
-        // 继续执行父类代码
         super<AppCompatActivity>.onCreate(savedInstanceState)
         // 启用边到边
         EdgeToEdgeUtils.applyEdgeToEdge(window, true)
@@ -126,6 +128,11 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
             post(this@FlutterTermPluxPlugin)
         }
 
+        mFlutterTextView = AppCompatTextView(this).apply {
+            text = "Flutter视图已销毁\n请返回主页面后继续"
+            gravity = Gravity.CENTER
+        }
+
         // 初始化屏闪动画
         mSplashLogo = AppCompatImageView(this@FlutterTermPluxPlugin).apply {
             setImageDrawable(
@@ -135,6 +142,7 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
                 )
             )
         }
+
         // 初始化跟布局
         mRootLayout = FrameLayout(this@FlutterTermPluxPlugin).apply {
             addView(
@@ -182,7 +190,9 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
     }
 
     override fun pushFlutterRoute(options: FlutterBoostRouteOptions?) {
-        onFlutterPush(options = options)
+        options?.let {
+            onFlutterPush(options = it)
+        }
     }
 
     override fun onStart(engine: FlutterEngine?) {
@@ -208,25 +218,38 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
     }
 
     override fun onFlutterCreated(flutterView: FlutterView?) {
-        // 如果FlutterView非空则继续执行否则抛出异常
         (flutterView ?: errorFlutterViewNull()).let { create ->
-            // 将FlutterView从Fragment上移除
             (create.parent as ViewGroup).removeView(create)
-            // 判断Flutter是否已经添加到FrameLayout上
             if (create.parent != mFlutterFrameLayout){
-                // 将FlutterView添加到FrameLayout上
-                mFlutterFrameLayout.addView(create)
+                mFlutterFrameLayout.addView(
+                    create,
+                    FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT
+                    )
+                )
+                if (mFlutterTextView.parent == mFlutterFrameLayout){
+                    mFlutterFrameLayout.removeView(mFlutterTextView)
+                }
             }
         }
     }
 
     override fun onFlutterDestroy(flutterView: FlutterView?) {
-        // 如果FlutterView非空则继续执行否则抛出异常
         (flutterView ?: errorFlutterViewNull()).let { destroy ->
-            // 判断Flutter是否已经添加到FrameLayout上
             if (destroy.parent == mFlutterFrameLayout){
-                // 将FlutterView从FrameLayout上移除
                 mFlutterFrameLayout.removeView(destroy)
+                if (mFlutterTextView.parent != mFlutterFrameLayout){
+                    mFlutterFrameLayout.addView(
+                        mFlutterTextView,
+                        FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            Gravity.CENTER
+                        )
+                    )
+                }
+
             }
         }
     }
@@ -246,7 +269,6 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
         setContent {
             val windowSize: WindowSizeClass = calculateWindowSizeClass(activity = this)
             val displayFeatures: List<DisplayFeature> = calculateDisplayFeatures(activity = this)
-            // val preferenceAdapter = PreferenceAdapter(activity = this)
             FlutterTermPluxTheme(
                 dynamicColor = true
             ) {
@@ -260,7 +282,6 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
                     topBarVisible = true,
                     topBarUpdate = { toolbar ->
                         setSupportActionBar(toolbar)
-                        supportActionBar?.setIcon(R.drawable.baseline_terminal_24)
                         supportActionBar?.setSubtitle(R.string.lib_name)
                         setupActionBarWithNavController(
                             navController = navController,
@@ -347,20 +368,9 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
     }
 
 
-    /**
-     * 初始化FlutterBoost
-     */
-    open fun initFlutterBoost(application: FlutterApplication) = Unit
-
-    /**
-     * 初始化Flutter插件
-     */
-    open fun initFlutterPlugin(engine: FlutterEngine) = Unit
-
-    /**
-     * 打开新的Flutter页面
-     */
-    open fun onFlutterPush(options: FlutterBoostRouteOptions?) = Unit
+    open fun initFlutterBoost(application: FlutterApplication){}
+    open fun initFlutterPlugin(engine: FlutterEngine){}
+    open fun onFlutterPush(options: FlutterBoostRouteOptions){}
 
 
     companion object {
