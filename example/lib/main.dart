@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      platformVersion = await _flutterTermpluxPlugin.getPlatformVersion() ??
+      platformVersion = await _flutterTermpluxPlugin.getShizukuVersion() ??
           'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';

@@ -68,7 +68,7 @@ fun ActivityMain(
         Screen.Flutter,
         Screen.Divider,
         Screen.Overview,
-        Screen.Apps,
+        Screen.Container,
         Screen.Manager,
         Screen.Settings,
         Screen.Preference,
@@ -76,7 +76,7 @@ fun ActivityMain(
     )
     val items = listOf(
         Screen.Overview,
-        Screen.Apps,
+        Screen.Container,
         Screen.Flutter,
         Screen.Manager,
         Screen.Settings
@@ -86,7 +86,7 @@ fun ActivityMain(
 
     val scope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val currentDestination = navBackStackEntry?.destination
     val snackBarHostState = remember {
         SnackbarHostState()
@@ -485,9 +485,9 @@ fun ActivityMain(
                         )
                     }
                     composable(
-                        route = Screen.Apps.route
+                        route = Screen.Container.route
                     ) {
-                        ScreenApps(
+                        ScreenContainer(
                             topBarVisible = topBarVisible,
                             topBarUpdate = topBarUpdate,
                             hostContainer = fragment

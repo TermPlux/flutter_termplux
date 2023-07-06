@@ -12,8 +12,8 @@ import java.lang.ref.WeakReference
 
 class MainActivity : FlutterTermPluxActivity() {
 
-    override fun initFlutterBoost(application: FlutterApplication) {
-        super.initFlutterBoost(application = application)
+
+    override fun onCreateFlutterBoost(application: FlutterApplication) {
         WeakReference(application).get()?.apply {
             FlutterBoost.instance().setup(
                 this@apply,
@@ -23,13 +23,11 @@ class MainActivity : FlutterTermPluxActivity() {
         }
     }
 
-    override fun initFlutterPlugin(engine: FlutterEngine) {
-        super.initFlutterPlugin(engine = engine)
+    override fun onCreateFlutterPlugin(engine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(engine)
     }
 
-    override fun onFlutterPush(options: FlutterBoostRouteOptions) {
-        super.onFlutterPush(options = options)
+    override fun onFlutterRoutePush(options: FlutterBoostRouteOptions) {
         val intent = FlutterBoostActivity.CachedEngineIntentBuilder(
             FlutterActivity::class.java
         )

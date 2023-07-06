@@ -20,6 +20,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.window.layout.DisplayFeature
 import com.google.accompanist.adaptive.calculateDisplayFeatures
+import com.idlefish.flutterboost.FlutterBoostRouteOptions
+import io.flutter.app.FlutterApplication
+import io.flutter.embedding.engine.FlutterEngine
 import io.termplux.flutter_termplux.ui.layout.ActivityMain
 import io.termplux.flutter_termplux.ui.theme.FlutterTermPluxTheme
 import kotlinx.coroutines.Runnable
@@ -29,10 +32,6 @@ abstract class FlutterTermPluxActivity : FlutterTermPluxPlugin(), Runnable {
 
     private lateinit var mSplashLogo: AppCompatImageView
     private lateinit var mRootView: View
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Composable
@@ -140,6 +139,46 @@ abstract class FlutterTermPluxActivity : FlutterTermPluxPlugin(), Runnable {
             }
             .start()
     }
+
+    @Deprecated(
+        message = "请使用onCreateFlutterBoost方法",
+        replaceWith = ReplaceWith(
+            expression = "onCreateFlutterBoost(application = application)"
+        )
+    )
+    override fun initFlutterBoost(
+        application: FlutterApplication
+    ) = onCreateFlutterBoost(
+        application = application
+    )
+
+    @Deprecated(
+        message = "请使用onCreateFlutterPlugin方法",
+        replaceWith = ReplaceWith(
+            expression = "onCreateFlutterPlugin(engine = engine)"
+        )
+    )
+    override fun initFlutterPlugin(
+        engine: FlutterEngine
+    ) = onCreateFlutterPlugin(
+        engine = engine
+    )
+
+    @Deprecated(
+        message = "请使用onFlutterRoutePush方法",
+        replaceWith = ReplaceWith(
+            expression = "onFlutterRoutePush(options = options)"
+        )
+    )
+    override fun onFlutterPush(
+        options: FlutterBoostRouteOptions
+    ) = onFlutterRoutePush(
+        options = options
+    )
+
+    abstract fun onCreateFlutterBoost(application: FlutterApplication)
+    abstract fun onCreateFlutterPlugin(engine: FlutterEngine)
+    abstract fun onFlutterRoutePush(options: FlutterBoostRouteOptions)
 
     companion object {
         /** 开屏图标动画时长 */

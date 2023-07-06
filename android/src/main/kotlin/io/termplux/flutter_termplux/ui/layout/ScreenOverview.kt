@@ -66,7 +66,7 @@ fun ScreenOverview(
                         .fillMaxWidth()
                         .clickable {
                             navController.navigate(
-                                route = Screen.Manager.route
+                                route = Screen.Container.route
                             ) {
                                 popUpTo(
                                     id = navController.graph.findStartDestination().id

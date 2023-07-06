@@ -9,7 +9,15 @@ class MockFlutterTermpluxPlatform
     implements FlutterTermPluxPlatform {
 
   @override
-  Future<String?> getPlatformVersion() => Future.value('42');
+  Future<bool?> getDynamicColors() => Future.value(true);
+
+  @override
+  Future<String?> getShizukuVersion() => Future.value('42');
+
+  @override
+  void toggle() {
+    // TODO: implement toggle
+  }
 }
 
 void main() {
@@ -19,11 +27,11 @@ void main() {
     expect(initialPlatform, isInstanceOf<MethodChannelFlutterTermPlux>());
   });
 
-  test('getPlatformVersion', () async {
+  test('getShizukuVersion', () async {
     FlutterTermPlux flutterTermpluxPlugin = FlutterTermPlux();
     MockFlutterTermpluxPlatform fakePlatform = MockFlutterTermpluxPlatform();
     FlutterTermPluxPlatform.instance = fakePlatform;
 
-    expect(await flutterTermpluxPlugin.getPlatformVersion(), '42');
+    expect(await flutterTermpluxPlugin.getShizukuVersion(), '42');
   });
 }

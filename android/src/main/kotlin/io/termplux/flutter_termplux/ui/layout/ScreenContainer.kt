@@ -20,7 +20,7 @@ import io.termplux.flutter_termplux.ui.widget.HostContainer
 import io.termplux.flutter_termplux.ui.widget.TopActionBar
 
 @Composable
-fun ScreenApps(
+fun ScreenContainer(
     topBarVisible: Boolean,
     topBarUpdate: (MaterialToolbar) -> Unit,
     hostContainer: FragmentContainerView
@@ -77,6 +77,6 @@ fun ScreenApps(
 
 @ScreenPreviews
 @Composable
-fun ScreenAppsPreview() {
+fun ScreenContainerPreview() {
 
 }

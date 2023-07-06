@@ -30,7 +30,7 @@ sealed class Screen constructor(
         title = R.string.menu_overview
     )
 
-    object Apps: Screen(
+    object Container: Screen(
         type = ScreenType.Compose,
         item = ItemType.Default,
         route = "apps",

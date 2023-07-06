@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetScaffold
@@ -29,6 +30,7 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ComposeNode
 import androidx.compose.runtime.CompositionContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -92,6 +94,7 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
         }
         // 设置主题
         setTheme(R.style.Theme_FlutterTermPlux)
+        setTitle(R.string.lib_name)
         super.onCreate(savedInstanceState)
         // 启用边到边
         EdgeToEdgeUtils.applyEdgeToEdge(window, true)
@@ -190,6 +193,9 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getPlatformVersion" -> result.success("Android ${Build.VERSION.RELEASE}")
+            "getShizukuVersion" -> result.success("13")
+            "getDynamicColors" -> result.success(true)
+            "toggle" -> {}
             else -> result.notImplemented()
         }
     }
@@ -248,16 +254,13 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
     open fun initFlutterPlugin(engine: FlutterEngine) = Unit
     open fun onFlutterPush(options: FlutterBoostRouteOptions) = Unit
 
-
     @Composable
     open fun Content(
         flutterFrame: FrameLayout,
         navController: NavController,
         configuration: AppBarConfiguration,
         container: FragmentContainerView
-    ) {
-
-    }
+    ) = Unit
 
 
     companion object {

@@ -3,6 +3,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'flutter_termplux_method_channel.dart';
 
 abstract class FlutterTermPluxPlatform extends PlatformInterface {
+  /// Constructs a FlutterTermpluxPlatform.
   FlutterTermPluxPlatform() : super(token: _token);
 
   static final Object _token = Object();
@@ -16,7 +17,15 @@ abstract class FlutterTermPluxPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  Future<bool?> getDynamicColors() {
+    throw UnimplementedError('getDynamicColors() has not been implemented.');
+  }
+
+  Future<String?> getShizukuVersion() {
+    throw UnimplementedError('getShizukuVersion() has not been implemented.');
+  }
+
+  void toggle() {
+    throw UnimplementedError('toggle() has not been implemented.');
   }
 }
