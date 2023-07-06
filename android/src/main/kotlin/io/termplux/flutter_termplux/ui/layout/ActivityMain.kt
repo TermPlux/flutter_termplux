@@ -471,12 +471,10 @@ fun ActivityMain(
                 }
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.Flutter.route,
+                    startDestination = Screen.Overview.route,
                     modifier = Modifier
                         .fillMaxSize()
-                        .nestedScroll(
-                            connection = scrollBehavior.nestedScrollConnection
-                        )
+                        .nestedScroll(connection = scrollBehavior.nestedScrollConnection)
                 ) {
                     composable(
                         route = Screen.Overview.route

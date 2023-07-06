@@ -7,10 +7,10 @@ import io.flutter.app.FlutterApplication
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugins.GeneratedPluginRegistrant
-import io.termplux.flutter_termplux.FlutterTermPluxPlugin
+import io.termplux.flutter_termplux.FlutterTermPluxActivity
 import java.lang.ref.WeakReference
 
-class MainActivity : FlutterTermPluxPlugin() {
+class MainActivity : FlutterTermPluxActivity() {
 
     override fun initFlutterBoost(application: FlutterApplication) {
         super.initFlutterBoost(application = application)
@@ -41,5 +41,4 @@ class MainActivity : FlutterTermPluxPlugin() {
             .build(FlutterBoost.instance().currentActivity())
         FlutterBoost.instance().currentActivity().startActivity(intent)
     }
-
 }

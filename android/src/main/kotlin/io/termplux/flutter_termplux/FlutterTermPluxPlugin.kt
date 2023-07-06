@@ -29,7 +29,9 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionContext
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
@@ -67,18 +69,12 @@ import kotlinx.coroutines.Runnable
 import kotlin.math.hypot
 
 open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, FlutterBoost.Callback,
-    FlutterPlugin, MethodChannel.MethodCallHandler, FlutterViewReturn, FlutterEngineConfigurator,
-    DefaultLifecycleObserver, Runnable {
+    FlutterPlugin, MethodChannel.MethodCallHandler, FlutterViewReturn, FlutterEngineConfigurator {
 
     private lateinit var mChannel: MethodChannel
 
     private lateinit var mFlutterFrameLayout: FrameLayout
     private lateinit var mFlutterTextView: AppCompatTextView
-    private lateinit var mSplashLogo: AppCompatImageView
-    private lateinit var mRootLayout: FrameLayout
-
-    private lateinit var mRecyclerView: RecyclerView
-    private lateinit var mSettingsView: ViewPager2
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
@@ -96,7 +92,7 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
         }
         // 设置主题
         setTheme(R.style.Theme_FlutterTermPlux)
-        super<AppCompatActivity>.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState)
         // 启用边到边
         EdgeToEdgeUtils.applyEdgeToEdge(window, true)
         // 深色模式跟随系统
@@ -124,47 +120,27 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
         )
 
 
-        mFlutterFrameLayout = FrameLayout(this).apply {
-            visibility = View.INVISIBLE
-            post(this@FlutterTermPluxPlugin)
-        }
+        mFlutterFrameLayout = FrameLayout(this@FlutterTermPluxPlugin)
 
-        mFlutterTextView = AppCompatTextView(this).apply {
+        mFlutterTextView = AppCompatTextView(this@FlutterTermPluxPlugin).apply {
             text = "Flutter视图已销毁\n请返回主页面后继续"
             gravity = Gravity.CENTER
         }
 
-        // 初始化屏闪动画
-        mSplashLogo = AppCompatImageView(this@FlutterTermPluxPlugin).apply {
-            setImageDrawable(
-                ContextCompat.getDrawable(
-                    context,
-                    R.drawable.custom_termplux_24
-                )
-            )
-        }
-
-        // 初始化跟布局
-        mRootLayout = FrameLayout(this@FlutterTermPluxPlugin).apply {
-            addView(
-                mFlutterFrameLayout,
-                FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.MATCH_PARENT
-                )
-            )
-            addView(
-                mSplashLogo,
-                FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
-                    Gravity.CENTER
-                )
-            )
-        }
-
-        // 添加生命周期观察者
-        lifecycle.addObserver(this@FlutterTermPluxPlugin)
+        setContentView(
+            ComposeView(
+                context = this@FlutterTermPluxPlugin
+            ).apply {
+                setContent {
+                    Content(
+                        flutterFrame = mFlutterFrameLayout,
+                        navController = navController,
+                        configuration = appBarConfiguration,
+                        container = mFragmentContainerView
+                    )
+                }
+            }
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -263,106 +239,6 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
 
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    override fun onCreate(owner: LifecycleOwner) {
-        super<DefaultLifecycleObserver>.onCreate(owner)
-        setContent {
-            //Content()
-            val windowSize: WindowSizeClass = calculateWindowSizeClass(activity = this)
-            val displayFeatures: List<DisplayFeature> = calculateDisplayFeatures(activity = this)
-            FlutterTermPluxTheme(
-                dynamicColor = true
-            ) {
-                ActivityMain(
-                    windowSize = windowSize,
-                    displayFeatures = displayFeatures,
-                    rootLayout = mRootLayout,
-                    appsUpdate = {
-
-                    },
-                    topBarVisible = true,
-                    topBarUpdate = { toolbar ->
-                        setSupportActionBar(toolbar)
-                        setupActionBarWithNavController(
-                            navController = navController,
-                            configuration = appBarConfiguration
-                        )
-                    },
-                    fragment = mFragmentContainerView,
-                    preferenceUpdate = {
-
-                    },
-                    optionsMenu = {},
-                    androidVersion = "13",
-                    shizukuVersion = "13",
-                    current = {},
-                    toggle = { /*TODO*/ },
-                    taskbar = {}
-                )
-            }
-        }
-    }
-
-    override fun onStart(owner: LifecycleOwner) {
-        super<DefaultLifecycleObserver>.onStart(owner)
-    }
-
-    override fun onResume(owner: LifecycleOwner) {
-        super<DefaultLifecycleObserver>.onResume(owner)
-    }
-
-    override fun onPause(owner: LifecycleOwner) {
-        super<DefaultLifecycleObserver>.onPause(owner)
-    }
-
-    override fun onStop(owner: LifecycleOwner) {
-        super<DefaultLifecycleObserver>.onStop(owner)
-    }
-
-    override fun onDestroy(owner: LifecycleOwner) {
-        super<DefaultLifecycleObserver>.onDestroy(owner)
-    }
-
-
-    override fun run() {
-        val cx = mSplashLogo.x + mSplashLogo.width / 2f
-        val cy = mSplashLogo.y + mSplashLogo.height / 2f
-        val startRadius = hypot(
-            x = mSplashLogo.width.toFloat(),
-            y = mSplashLogo.height.toFloat()
-        )
-        val endRadius = hypot(
-            x = mFlutterFrameLayout.width.toFloat(),
-            y = mFlutterFrameLayout.height.toFloat()
-        )
-        val circularAnim = ViewAnimationUtils
-            .createCircularReveal(
-                mFlutterFrameLayout,
-                cx.toInt(),
-                cy.toInt(),
-                startRadius,
-                endRadius
-            )
-            .setDuration(
-                splashPart2AnimatorMillis.toLong()
-            )
-        mSplashLogo.animate()
-            .alpha(0f)
-            .scaleX(1.3f)
-            .scaleY(1.3f)
-            .setDuration(
-                splashPart1AnimatorMillis.toLong()
-            )
-            .withEndAction {
-                mSplashLogo.visibility = View.GONE
-            }
-            .withStartAction {
-                mFlutterFrameLayout.visibility = View.VISIBLE
-                circularAnim.start()
-            }
-            .start()
-    }
-
     private fun errorFlutterViewNull(): Nothing {
         error("Error: FlutterView is null!")
     }
@@ -372,15 +248,19 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
     open fun initFlutterPlugin(engine: FlutterEngine) = Unit
     open fun onFlutterPush(options: FlutterBoostRouteOptions) = Unit
 
+
     @Composable
-    open fun Content() = Unit
+    open fun Content(
+        flutterFrame: FrameLayout,
+        navController: NavController,
+        configuration: AppBarConfiguration,
+        container: FragmentContainerView
+    ) {
+
+    }
 
 
     companion object {
         const val plugin_channel: String = "flutter_termplux"
-
-        /** 开屏图标动画时长 */
-        const val splashPart1AnimatorMillis = 600
-        const val splashPart2AnimatorMillis = 800
     }
 }

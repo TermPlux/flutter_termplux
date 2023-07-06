@@ -1,28 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <application
-        android:icon="@mipmap/ic_launcher"
-        android:label="flutter_termplux_example"
-        android:theme="@style/Theme.Material3.DayNight.NoActionBar">
-
+    <!-- 标准清单示例 -->
+    <!-- Application标签下只加icon和roundIcon，其他不要添加会冲突 -->
+    <application android:icon="@mipmap/ic_launcher">
+        <!-- 如果没有的话记得添加这个哦 -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-
+        <!-- 主活动配置示例 -->
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <!-- Flutter页面配置配置示例 -->
         <activity
             android:name=".FlutterActivity"
-            android:exported="false" />
-
-
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:exported="false"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme" />
+        </activity>
     </application>
 </manifest>
