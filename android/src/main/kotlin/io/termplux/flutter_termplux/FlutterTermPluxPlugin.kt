@@ -6,53 +6,20 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ComposeNode
-import androidx.compose.runtime.CompositionContext
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentContainerView
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import androidx.window.layout.DisplayFeature
-import com.google.accompanist.adaptive.calculateDisplayFeatures
-import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.internal.EdgeToEdgeUtils
-import com.google.android.material.navigation.NavigationView
 import com.idlefish.flutterboost.FlutterBoost
 import com.idlefish.flutterboost.FlutterBoostDelegate
 import com.idlefish.flutterboost.FlutterBoostRouteOptions
@@ -65,10 +32,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.termplux.flutter_termplux.databinding.ContainerBinding
 import io.termplux.flutter_termplux.implement.FlutterViewReturn
-import io.termplux.flutter_termplux.ui.layout.ActivityMain
-import io.termplux.flutter_termplux.ui.theme.FlutterTermPluxTheme
-import kotlinx.coroutines.Runnable
-import kotlin.math.hypot
 
 open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, FlutterBoost.Callback,
     FlutterPlugin, MethodChannel.MethodCallHandler, FlutterViewReturn, FlutterEngineConfigurator {
@@ -130,20 +93,14 @@ open class FlutterTermPluxPlugin : AppCompatActivity(), FlutterBoostDelegate, Fl
             gravity = Gravity.CENTER
         }
 
-        setContentView(
-            ComposeView(
-                context = this@FlutterTermPluxPlugin
-            ).apply {
-                setContent {
-                    Content(
-                        flutterFrame = mFlutterFrameLayout,
-                        navController = navController,
-                        configuration = appBarConfiguration,
-                        container = mFragmentContainerView
-                    )
-                }
-            }
-        )
+        setContent {
+            Content(
+                flutterFrame = mFlutterFrameLayout,
+                navController = navController,
+                configuration = appBarConfiguration,
+                container = mFragmentContainerView
+            )
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
